@@ -60,14 +60,17 @@ export default function Page() {
       .catch(() => {});
   }, []);
 
-  // Default de rango: acota el payload inicial a los últimos 90 días en vez
-  // de las 69.100 filas sin filtrar. Solo se aplica una vez, cuando llega
-  // maxDate y el usuario todavía no tocó los inputs de fecha — no vuelve a
-  // pisar una selección manual en renders posteriores.
+  // Default de rango: acota el payload inicial en vez de traer todo el
+  // histórico sin filtrar, y además extiende "hasta" 14 días más allá del
+  // último dato histórico para que las predicciones (que son posteriores a
+  // maxDate) aparezcan solas al entrar, sin que haya que tocar los filtros
+  // a mano. Solo se aplica una vez, cuando llega maxDate y el usuario
+  // todavía no tocó los inputs de fecha — no vuelve a pisar una selección
+  // manual en renders posteriores.
   useEffect(() => {
     if (maxDate && !from && !to) {
-      setTo(maxDate);
-      setFrom(addDays(maxDate, -90));
+      setTo(addDays(maxDate, 14));
+      setFrom(addDays(maxDate, -30));
     }
   }, [maxDate]);
 
