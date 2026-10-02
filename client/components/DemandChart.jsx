@@ -16,14 +16,14 @@ function mergeSeries(historical = [], predictions = []) {
   historical.forEach((row) => {
     const date = isoDate(row.date);
     const existing = byDate.get(date) || { date };
-    existing.historical = (existing.historical || 0) + Number(row.total_demand || 0);
+    existing.historical = Math.round((existing.historical || 0) + Number(row.total_demand || 0));
     byDate.set(date, existing);
   });
 
   predictions.forEach((row) => {
     const date = isoDate(row.date);
     const existing = byDate.get(date) || { date };
-    existing.predicted = (existing.predicted || 0) + Number(row.predicted_demand || 0);
+    existing.predicted = Math.round((existing.predicted || 0) + Number(row.predicted_demand || 0));
     byDate.set(date, existing);
   });
 
@@ -55,6 +55,8 @@ export default function DemandChart({ historical, predictions }) {
               axisLine={false}
               tickLine={false}
               width={34}
+              allowDecimals={false}
+              tickFormatter={(value) => Math.round(value)}
             />
             <Tooltip
               contentStyle={{
